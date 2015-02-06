@@ -7,3 +7,4 @@ Class repo for example code for Interactive Prototyping Spring 2015, MFADT
 
 * a readme file
 * a gitignore file 
+* some test files
