@@ -1,5 +1,5 @@
 # IP_Spring15
-Class repo for example code for Interactive Prototyping Spring 2015, MFADT
+Repository for Interactive Prototyping Spring 2015, MFADT
 
 **This is my readme file**
  
@@ -7,4 +7,4 @@ Class repo for example code for Interactive Prototyping Spring 2015, MFADT
 
 * a readme file
 * a gitignore file 
-* some test files
+* weekly assignments
