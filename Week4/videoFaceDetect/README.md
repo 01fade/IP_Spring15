@@ -1,18 +1,13 @@
 # Python & Scrapy & PyMongo
 
-Based on [this tutorial](https://realpython.com/blog/python/web-scraping-with-scrapy-and-mongodb/).
+Based on [this tutorial](https://realpython.com/blog/python/face-detection-in-python-using-a-webcam/), which explains the code for detecting faces using your webcam input.
 
-You need to install scrapy and pymongo and mongodb.
+You need to install opencv and maybe [macports](https://www.macports.org/install.php) and to use a video file you will need [ffmpeg](https://ffmpeg.org). I just followed [this youtube tutorial](https://www.youtube.com/watch?v=1_0p9nA3yxM).
 
-To run this open one terminal window and type
-		$ mongod
+A cool thing that you can do in Terminal with ffmpeg: convert your video file, in this case I converted my video from .mov to .mp4
+```
+$ ffmpeg -i Stop.mov Stop.mp4
+```
 
-It should say something like "waiting for connections on port 27017"
-
-In another terminal window cd into realpython1 and type
-	$ scrapy crawl realpython1
-
-The results should show the first 20 results for videos when searching "music" on Youtube. Also it should show 
-
-I also used [Robomongo](http://robomongo.org) to get a better view on the data.
-![alt tag](robomongo.png)
+Here's the result with the video in this repo.
+![alt tag](example.png)
