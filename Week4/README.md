@@ -10,7 +10,7 @@ To run this open one terminal window and type
 It should say something like "waiting for connections on port 27017"
 
 In another terminal window cd into realpython1 and type
-		$ scrapy crawl realpython1
+	$ scrapy crawl realpython1
 
 The results should show the first 20 results for videos when searching "music" on Youtube. Also it should show 
 
