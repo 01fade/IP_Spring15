@@ -22,7 +22,7 @@ I also used [Robomongo](http://robomongo.org) to get a better view on the data.
 
 ###Options
 
-Find this:
+Find this in realpython1_spider.py:
 
 ```
 start_urls = (
