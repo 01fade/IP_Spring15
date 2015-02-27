@@ -9,5 +9,9 @@ A cool thing that you can do in Terminal with ffmpeg: convert your video file, i
 $ ffmpeg -i Stop.mov Stop.mp4
 ```
 
+To run this code cd to this folder and type
+```
+$ python video.py haarcascade_frontalface_default.xml
+```
 Here's the result with the video in this repo.
 ![alt tag](example.png)
