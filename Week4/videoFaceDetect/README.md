@@ -1,4 +1,4 @@
-# Python & Scrapy & PyMongo
+# Python & OpenCV
 
 Based on [this tutorial](https://realpython.com/blog/python/face-detection-in-python-using-a-webcam/), which explains the code for detecting faces using your webcam input.
 
