@@ -1,6 +1,6 @@
 #Midterm Interactive Prototyping Spring 2015
 
-**Interactive Installation about YouTube as TV**
+**Interactive Installation about YouTube as TV** // Working title: YouAd
 
 **SCOPE OF WORK**
 ---
