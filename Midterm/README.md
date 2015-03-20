@@ -5,7 +5,7 @@ Hang Do Thi Duc for Major Studio 2
 
 **Interactive Installation about YouTube as TV**
 
-**SCOPE OF WORK**
+***SCOPE OF WORK***
 
 DELIVERABLES
 
