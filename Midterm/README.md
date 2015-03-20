@@ -1,6 +1,5 @@
 #Midterm Interactive Prototyping Spring 2015
-13 März 2015
-Hang Do Thi Duc for Major Studio 2
+
 **Interactive Installation about YouTube as TV**
 
 **SCOPE OF WORK**
@@ -31,7 +30,13 @@ DELIVERABLES
 ***TIMELINE***
 
 Scope deliverables will be completed on April 3.
+User Testing in the Week of March 30. Test what people think about this after they interacted with it.
 
 ***Success evaluation***
 
-Success if person who interacts with this installation begins to think critically about this topic or at least if it raises more questions in her/his mind.
+Success if 50% of the people who interact with this installation begin to think critically about this topic or at least if it raises more questions in their mind about YouTube, Teens, Consumerism, Advertising, Product Placement etc.
+
+
+March 20, 2015
+
+Hang Do Thi Duc for Major Studio 2
