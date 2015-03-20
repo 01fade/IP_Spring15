@@ -11,7 +11,8 @@ class Realpython1Spider(Spider):
     name = "realpython1"
     allowed_domains = ["youtube.com"]
     start_urls = (
-        'http://www.youtube.com/results?search_query=music&filters=video',
+        'http://www.youtube.com/results?search_query=dress&filters=video',
+        'http://www.youtube.com/results?filters=video&search_query=dress&page=2',
     )
 
     def parse(self, response):

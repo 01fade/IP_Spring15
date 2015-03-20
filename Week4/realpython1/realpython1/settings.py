@@ -26,4 +26,4 @@ ITEM_PIPELINES = ['realpython1.pipelines.Realpython1Pipeline', ]
 MONGODB_SERVER = "localhost"
 MONGODB_PORT = 27017
 MONGODB_DB = "youtube"
-MONGODB_COLLECTION = "music"
+MONGODB_COLLECTION = "dress"
