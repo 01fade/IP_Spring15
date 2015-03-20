@@ -3,7 +3,10 @@
 **Interactive Installation about YouTube as TV**
 
 **SCOPE OF WORK**
+---
 DELIVERABLES
+
+---
 
 ***A  -  Hardware***
 
@@ -36,7 +39,7 @@ User Testing in the Week of March 30. Test what people think about this after th
 
 Success if 50% of the people who interact with this installation begin to think critically about this topic or at least if it raises more questions in their mind about YouTube, Teens, Consumerism, Advertising, Product Placement etc.
 
-
+---
 March 20, 2015
 
 Hang Do Thi Duc for Major Studio 2
