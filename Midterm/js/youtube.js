@@ -1,14 +1,17 @@
 // create youtube player
 var player;
-var activeChannel = 1;
+var activeChannel;
 
 function onYouTubeIframeAPIReady() {
+    activeChannel = Math.floor(Math.random()*6);
+    var index = activeChannel - 1;
     player = new YT.Player('youtube', {
       height: vheight,
       width: vwidth,
-      videoId: videoIdArray[0].videoId,
+      videoId: videoIdArray[index].videoId,
       playerVars: {
       	controls: 0,
+        cc_load_policy: 0,
       	iv_load_policy: 3, // remove annotations
       	modestbranding: 1,
       	autohide: 1,
@@ -25,11 +28,12 @@ function onYouTubeIframeAPIReady() {
 // autoplay video
 function onPlayerReady(event) {
 	event.target.playVideo();
-	activeChannel = 1;
+  listenChannel(activeChannel);
 }
 
 // when video ends
-function onPlayerStateChange(event) {        
+function onPlayerStateChange(event) {
+    //when video ended, play again    
     if(event.data === 0) {            
         player.playVideo();
     }
@@ -40,5 +44,4 @@ $(document).ready(function(){
 	tag.src = "https://www.youtube.com/iframe_api";
 	var firstScriptTag = document.getElementsByTagName('script')[0];
 	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
 });

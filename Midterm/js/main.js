@@ -1,20 +1,18 @@
 var vheight = window.innerHeight;
 var vwidth = window.innerWidth;
 var videoIdArray = [];
-var adTime;
-var d = new Date();
-var timer = 0;
 var inCart = [];
 
 function getDataFromYT() {
 	//http://stackoverflow.com/questions/29383394/i-want-the-total-amount-of-youtube-plays
 	videoIdArray = [
-	{videoId: "bsbTBgq5KDk", theme: "Miscellaneous Promotion" },
-	{videoId: "zoA9WmJ-BTM", theme: "Look Our Merch" },
-	{videoId: "ckiQV_0RXyU", theme: "Buy My Faves" },
-	{videoId: "yur1OmPly3k", theme: "Beauty Products" },
-	{videoId: "VoMqWgqIiCo", theme: "More Beauty Products" },
-	{videoId: "X09MYZaizjk", theme: "Self Promotion" }
+	{videoId: "bsbTBgq5KDk", theme: "Lifestyle Lifestyle", start: 0, ytname: "Tyler" },
+	{videoId: "zoA9WmJ-BTM", theme: "Merchandise", start: 0, ytname: "Smosh" },
+	{videoId: "ckiQV_0RXyU", theme: "Lifestyle Products", start: 0, ytname: "Zoe" },
+	{videoId: "yur1OmPly3k", theme: "Skin Products", start: 0, ytname: "Michelle" },
+	{videoId: "0tM9OfLJU1M", theme: "Entertainment", start: 0, ytname: "Alfie" },
+	{videoId: "VoMqWgqIiCo", theme: "Beauty Hauls", start: 0, ytname: "Zoe" }
+	// {videoId: "X09MYZaizjk", theme: "Self Promotion", start: 0, ytname: "Tyler Oakley" }
 	];
 
 	for (var i = 0; i < videoIdArray.length; i++) {
@@ -32,6 +30,8 @@ function getInfo (_sURL, i) {
 	    videoIdArray[i].title = data.entry.media$group.media$title.$t;
 	    videoIdArray[i].duration = data.entry.media$group.media$content[0].duration;
 	    videoIdArray[i].count = data.entry.yt$statistics.viewCount;
+	    videoIdArray[i].likes = data.entry.yt$rating.numLikes;
+	    videoIdArray[i].dislikes = data.entry.yt$rating.numDislikes;
 	    videoIdArray[i].rating = (parseFloat(data.entry.yt$rating.numLikes) / 
 	    	(parseFloat(data.entry.yt$rating.numLikes) + 
 	    	parseFloat(data.entry.yt$rating.numDislikes)) * 100).toFixed(2);
@@ -41,16 +41,18 @@ function getInfo (_sURL, i) {
 function listenChannel (_activeChannel) {
 	//show channel info and then fade out
 	var index = _activeChannel - 1;
-    $("#channel").html("CH0"+ _activeChannel + "&nbsp; &nbsp; \t <span id='theme'>" + videoIdArray[index].theme + "</span>");
+    $("#channel").html("CHANNEL 0"+ _activeChannel + "&nbsp; \t <span id='theme'>" + videoIdArray[index].theme + "</span>");
     $("#channel").fadeIn();
     setTimeout(function(){$("#channel").fadeOut();}, 8000);
-    // console.log("Active Channel: " + activeChannel);
+    console.log("Active Channel: " + _activeChannel);
 
 
 	setTimeout(function(){
 	    if (videoIdArray[index].count != undefined) {
 	    	var str = numberWithCommas(videoIdArray[index].count);
-	    	$("#viewcount").html("<b>" + str + "</b> teenagers watched");
+	    	var str2 = numberWithCommas(videoIdArray[index].likes);
+	    	var str3 = numberWithCommas(videoIdArray[index].dislikes);
+	    	$("#viewcount").html("<b>" + str + "</b> watched<br> <b>" + str2 + "</b> liked &nbsp; &nbsp;<b>" + str3 + "</b> disliked");
 	    	setInterval(function () { 
 	    		$("#viewcount").fadeToggle(2000, "swing");
 			}, 1000);
@@ -68,9 +70,8 @@ function numberWithCommas(x) {
 function controls () {
 	$("#plus").on('click', function(){
 		var index = activeChannel - 1;
-
-		// var videoTime = player.getCurrentTime(); //when the video paused
-		// videoIdArray[index].videoTime = videoTime;
+		//save the current pause time
+		videoIdArray[index].start = Math.floor(player.getCurrentTime());
 
 		if (activeChannel == 6) {
 			activeChannel = 6;
@@ -79,18 +80,16 @@ function controls () {
 			activeChannel ++;
 			listenChannel(activeChannel);
 			var index = activeChannel - 1;
-			var placeholder = timer;
-			if (timer > videoIdArray[index].duration) {
-				placeholder = timer - parseFloat(videoIdArray[index].duration);
-			};
-			player.loadVideoById({'videoId': videoIdArray[index].videoId, 'startSeconds': placeholder});
-			advertising();			
+
+			player.loadVideoById({'videoId': videoIdArray[index].videoId, 'startSeconds': videoIdArray[index].start});
 		};
 		console.log(videoIdArray);
 		$("#overlay").fadeOut();
 	});
 	$("#minus").on('click', function(){
 		var index = activeChannel - 1;
+		//save the current pause time
+		videoIdArray[index].start = Math.floor(player.getCurrentTime());
 
 		if (activeChannel == 1) {
 			activeChannel = 1;
@@ -99,24 +98,21 @@ function controls () {
 			activeChannel --;
 			listenChannel(activeChannel);
 			var index = activeChannel - 1;
-			var placeholder = timer;
-			if (timer > videoIdArray[index].duration) {
-				placeholder = timer - parseFloat(videoIdArray[index].duration);
-			};
-			player.loadVideoById({'videoId': videoIdArray[index].videoId, 'startSeconds': placeholder});
-			advertising();			
+
+			player.loadVideoById({'videoId': videoIdArray[index].videoId, 'startSeconds': videoIdArray[index].start});
 		};
 		console.log(videoIdArray);
 		$("#overlay").fadeOut();
 	});
 	$("#cart").on('click', function(){
+    	$("#cart").removeClass("notify");
 		$("#shoplist").html(" ");
 		var total = 0;
 		for (var i = inCart.length - 1; i >= 0; i--) {
 			$("#shoplist").append("<li>" + inCart[i].img + "</li>").append("<p>- $" + inCart[i].price + " -</p><hr>");
-			// if (inCart[i].price != '??'){
+			if ($.isNumeric(inCart[i].price) == true ){
 				total = total + inCart[i].price;
-			// };
+			};
 		};
 		if (total != undefined) {
 			$("#total").html("<b>TOTAL</b> &nbsp; $" + total);
@@ -131,6 +127,9 @@ function controls () {
 		$("#overlay").fadeOut();
 		// player.playVideo();
 	});
+	$("#buynow").on('click', function(){
+		alert("Thank you for your interest in these awesome products! You'll be able to purchase them soon.");
+	});
 
 	$("#youtube").on('click', function(){ console.log("click");});
 
@@ -143,78 +142,124 @@ function controls () {
 }
 
 function advertising() {
-	if (timer == 50){
+	var index = activeChannel - 1;
 	    if (activeChannel == 1) {
-	    	$("#forsale").html("<div id='added'>This was added to your cart.</button><img src='img/"+ activeChannel +".jpg'></img><img src='img/"+ activeChannel +"2.jpg'></img>");
-	    	$("#forsale").slideDown("slow", "linear");
-	    	setTimeout(function(){$("#forsale").slideUp("slow", "linear");}, 5000);
-	    	inCart.push({price: 25, img: "<img src='img/"+ activeChannel +".jpg'>"},{price: 15, img: "<img src='img/"+ activeChannel +"2.jpg'>"});
-	    	$("#cartCount").html(" ( " + inCart.length + " )");
+	    	if (player.getCurrentTime() > 10 && player.getCurrentTime() < 11) {
+		    	$("#forsale").html("<div id='added'>"+ videoIdArray[index].ytname +" recommends this.</button><img src='img/"+ activeChannel +".jpg'>");
+		    	$("#forsale").slideDown(1000, "linear");
+		    	setTimeout(function(){$("#forsale").slideUp(1000, "linear");}, 8000);
+		    	inCart.push({price: 40, img: "<img src='img/"+ activeChannel +".jpg'>"});
+		    	$("#cartCount").html(" ( " + inCart.length + " )");
+		    	$("#cart").addClass("notify");
+		    };
+	    	if (player.getCurrentTime() > 105 && player.getCurrentTime() < 106) {
+		    	$("#forsale").html("<div id='added'>"+ videoIdArray[index].ytname +" recommends this.</button><img src='img/"+ activeChannel +"2.jpg'>");
+		    	$("#forsale").slideDown(1000, "linear");
+		    	setTimeout(function(){$("#forsale").slideUp(1000, "linear");}, 8000);
+		    	inCart.push({price: " (Signup)", img: "<img src='img/"+ activeChannel +"2.jpg'>"});
+		    	$("#cartCount").html(" ( " + inCart.length + " )");
+		    	$("#cart").addClass("notify");
+		    };
+	    	if (player.getCurrentTime() > 200 && player.getCurrentTime() < 201) {
+		    	$("#forsale").html("<div id='added'>"+ videoIdArray[index].ytname +" recommends this.</button><img src='img/"+ activeChannel +"3.jpg'></img><img src='img/"+ activeChannel +"4.jpg'></img>");
+		    	$("#forsale").slideDown(1000, "linear");
+		    	setTimeout(function(){$("#forsale").slideUp(1000, "linear");}, 8000);
+		    	inCart.push({price: 25, img: "<img src='img/"+ activeChannel +"3.jpg'>"},{price: 15, img: "<img src='img/"+ activeChannel +"4.jpg'>"});
+		    	$("#cartCount").html(" ( " + inCart.length + " )");
+		    	$("#cart").addClass("notify");
+		    };
 	    } else if (activeChannel == 2) {
-	    	$("#forsale").html("<div id='added'>This was added to your cart.</button><img src='img/"+ activeChannel +".jpg'></img>");
-	    	$("#forsale").slideDown("slow", "linear");
-	    	setTimeout(function(){$("#forsale").slideUp("slow", "linear");}, 5000);
-	    	inCart.push({price: 20, img: "<img src='img/"+ activeChannel +".jpg'>"});
-	    	$("#cartCount").html(" ( " + inCart.length + " )");
+	    	if (player.getCurrentTime() > 133 && player.getCurrentTime() < 134) {
+		    	$("#forsale").html("<div id='added'>"+ videoIdArray[index].ytname +" recommend this.</button><img src='img/"+ activeChannel +".jpg'></img>");
+		    	$("#forsale").slideDown(1000, "linear");
+		    	setTimeout(function(){$("#forsale").slideUp(1000, "linear");}, 8000);
+		    	inCart.push({price: 20, img: "<img src='img/"+ activeChannel +".jpg'>"});
+		    	$("#cartCount").html(" ( " + inCart.length + " )");
+		    	$("#cart").addClass("notify");
+		    };
+	    	if (player.getCurrentTime() > 160 && player.getCurrentTime() < 161) {
+		    	$("#forsale").html("<div id='added'>"+ videoIdArray[index].ytname +" recommend this.</button><img src='img/"+ activeChannel +"2.jpg'></img>");
+		    	$("#forsale").slideDown(1000, "linear");
+		    	setTimeout(function(){$("#forsale").slideUp(1000, "linear");}, 8000);
+		    	inCart.push({price: 20, img: "<img src='img/"+ activeChannel +"2.jpg'>"});
+		    	$("#cartCount").html(" ( " + inCart.length + " )");
+		    	$("#cart").addClass("notify");
+		    };
 	    } else if (activeChannel == 3) {
-	    	$("#forsale").html("<div id='added'>This was added to your cart.</button><img src='img/"+ activeChannel +".jpg'></img>");
-	    	$("#forsale").slideDown("slow", "linear");
-	    	setTimeout(function(){$("#forsale").slideUp("slow", "linear");}, 5000);
-	    	inCart.push({price: 237, img: "<img src='img/"+ activeChannel +".jpg'>"});
-	    	$("#cartCount").html(" ( " + inCart.length + " )");
+		    if (player.getCurrentTime() > 55 && player.getCurrentTime() < 56) {
+		    	$("#forsale").html("<div id='added'>"+ videoIdArray[index].ytname +" recommends this.</button><img src='img/"+ activeChannel +".jpg'></img>");
+		    	$("#forsale").slideDown(1000, "linear");
+		    	setTimeout(function(){$("#forsale").slideUp(1000, "linear");}, 8000);
+		    	inCart.push({price: 424, img: "<img src='img/"+ activeChannel +".jpg'>"});
+		    	$("#cartCount").html(" ( " + inCart.length + " )");
+		    	$("#cart").addClass("notify");
+		    };
+		    if (player.getCurrentTime() > 160 && player.getCurrentTime() < 161) {
+		    	$("#forsale").html("<div id='added'>"+ videoIdArray[index].ytname +" recommends this.</button><img src='img/"+ activeChannel +"2.jpg'></img>");
+		    	$("#forsale").slideDown(1000, "linear");
+		    	setTimeout(function(){$("#forsale").slideUp(1000, "linear");}, 8000);
+		    	inCart.push({price: 237, img: "<img src='img/"+ activeChannel +"2.jpg'>"});
+		    	$("#cartCount").html(" ( " + inCart.length + " )");
+		    	$("#cart").addClass("notify");
+		    };
 	    } else if (activeChannel == 4) {
-	    	$("#forsale").html("<div id='added'>This was added to your cart.</button><img src='img/"+ activeChannel +".jpg'></img>");
-	    	$("#forsale").slideDown("slow", "linear");
-	    	setTimeout(function(){$("#forsale").slideUp("slow", "linear");}, 5000);
-	    	inCart.push({price: 16, img: "<img src='img/"+ activeChannel +".jpg'>"});
-	    	$("#cartCount").html(" ( " + inCart.length + " )");
+		    if (player.getCurrentTime() > 10 && player.getCurrentTime() < 11) {
+		    	$("#forsale").html("<div id='added'>"+ videoIdArray[index].ytname +" recommends this.</button><img src='img/"+ activeChannel +".jpg'></img>");
+		    	$("#forsale").slideDown(1000, "linear");
+		    	setTimeout(function(){$("#forsale").slideUp(1000, "linear");}, 8000);
+		    	inCart.push({price: 16, img: "<img src='img/"+ activeChannel +".jpg'>"});
+		    	$("#cartCount").html(" ( " + inCart.length + " )");
+		    	$("#cart").addClass("notify");
+		    };
+		    if (player.getCurrentTime() > 100 && player.getCurrentTime() < 101) {
+		    	$("#forsale").html("<div id='added'>"+ videoIdArray[index].ytname +" recommends this.</button><img src='img/"+ activeChannel +"2.jpg'></img>");
+		    	$("#forsale").slideDown(1000, "linear");
+		    	setTimeout(function(){$("#forsale").slideUp(1000, "linear");}, 8000);
+		    	inCart.push({price: 38, img: "<img src='img/"+ activeChannel +"2.jpg'>"});
+		    	$("#cartCount").html(" ( " + inCart.length + " )");
+		    	$("#cart").addClass("notify");
+		    };
 	    } else if (activeChannel == 5) {
-	    	$("#forsale").html("<div id='added'>This was added to your cart.</button><img src='img/"+ activeChannel +".jpg'></img>");
-	    	$("#forsale").slideDown("slow", "linear");
-	    	setTimeout(function(){$("#forsale").slideUp("slow", "linear");}, 5000);
-	    	inCart.push({price: 48, img: "<img src='img/"+ activeChannel +".jpg'>"});
-	    	$("#cartCount").html(" ( " + inCart.length + " )");
+		    if (player.getCurrentTime() > 30 && player.getCurrentTime() < 31) {
+		    	$("#forsale").html("<div id='added'>"+ videoIdArray[index].ytname +" recommends this.</button><img src='img/"+ activeChannel +".jpg'></img>");
+		    	$("#forsale").slideDown(1000, "linear");
+		    	setTimeout(function(){$("#forsale").slideUp(1000, "linear");}, 8000);
+		    	inCart.push({price: 10, img: "<img src='img/"+ activeChannel +".jpg'>"});
+		    	$("#cartCount").html(" ( " + inCart.length + " )");
+		    	$("#cart").addClass("notify");
+		    };
+
 	    } else {
-	    	$("#forsale").html("<div id='added'>This was added to your cart.</button><img src='img/"+ activeChannel +".jpg'></img>");
-	    	$("#forsale").slideDown("slow", "linear");
-	    	setTimeout(function(){$("#forsale").slideUp("slow", "linear");}, 5000);
-	    	inCart.push({price: "??", img: "<img src='img/"+ activeChannel +".jpg'>"});
-	    	$("#cartCount").html(" ( " + inCart.length + " )");
+		    if (player.getCurrentTime() > 260 && player.getCurrentTime() < 261) {
+		    	$("#forsale").html("<div id='added'>"+ videoIdArray[index].ytname +" recommends this.</button><img src='img/"+ activeChannel +".jpg'></img>");
+		    	$("#forsale").slideDown(1000, "linear");
+		    	setTimeout(function(){$("#forsale").slideUp(1000, "linear");}, 8000);
+		    	inCart.push({price: 45, img: "<img src='img/"+ activeChannel +".jpg'>"});
+		    	$("#cartCount").html(" ( " + inCart.length + " )");
+		    	$("#cart").addClass("notify");
+		    };
+		    if (player.getCurrentTime() > 380 && player.getCurrentTime() < 381) {
+		    	$("#forsale").html("<div id='added'>"+ videoIdArray[index].ytname +" recommends this.</button><img src='img/"+ activeChannel +"2.jpg'></img>");
+		    	$("#forsale").slideDown(1000, "linear");
+		    	setTimeout(function(){$("#forsale").slideUp(1000, "linear");}, 8000);
+		    	inCart.push({price: 49, img: "<img src='img/"+ activeChannel +"2.jpg'>"});
+		    	$("#cartCount").html(" ( " + inCart.length + " )");
+		    	$("#cart").addClass("notify");
+		    };
 	    };
-	console.log(inCart);
-	};
-
-	// if (timer == 20){
-	//     if (activeChannel == 1) {
-
-	//     } else if (activeChannel == 2) {
-
-	//     } else if (activeChannel == 3) {
-
-	//     } else if (activeChannel == 4) {
-
-	//     } else if (activeChannel == 5) {
-
-	//     } else {
-
-	//     };
-	// };
-
-
 
 }
 
 $(document).ready(function(){
 	setInterval(function () { 
-		timer++;
+		// timer++;
 		advertising();
 		// console.log("time: " + timer);
 	}, 1000);
 
 	controls();
 	getDataFromYT();
-	listenChannel(1);
 });
 
 
-//http://stackoverflow.com/questions/667555/detecting-idle-time-in-javascript-elegantly
+//http://stackoverflow.com/questions/57555/detecting-idle-time-in-javascript-elegant5y
